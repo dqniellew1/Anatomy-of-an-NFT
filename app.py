@@ -9,11 +9,8 @@ import seaborn as sns
 from st_aggrid import AgGrid
 
 st.title('Loot Universe')
-st.text('How to use?')
-with st.expander("See explanantion"):
-    st.text("""
-    Click on column headings to sort and filter data.
-    """)
+st.subheader('How to use?')
+st.info("Click on Ξ in the column headings to sort and filter data.")
 
 DATA_URL = "data/loot_updated.parquet"
 
@@ -123,6 +120,7 @@ sns.barplot(x=selection, y='Count', data=dft, hue=f"{selection}_rarity", dodge=F
 plt.legend(title='Item Rarity', bbox_to_anchor=(1, 1), loc='upper right')
 plt.xlabel('Item name')
 ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha='right')
+fig.tight_layout()
 st.pyplot(fig)
 
 
