@@ -100,8 +100,8 @@ col4.metric("No Demon crowns", value= len(eq_count))
 
 st.text('Relationships open to interpretation.')
 AgGrid(groups[['lootId','score', 'rarest','sqdist','weapon', 'chest', 'head', 'waist', 'foot', 'hand', 'neck', 'ring']])
-
 selection = st.selectbox('Select equipment:', ['weapon_rarity', 'chest_rarity', 'head_rarity', 'waist_rarity', 'foot_rarity', 'hand_rarity', 'neck_rarity', 'ring_rarity'])
+st.text("Look at different categories in each cluster.")
 eq = df[selection]
 fig, ax = plt.subplots(figsize = (10,6), dpi=300)
 fig.suptitle('Loot sub-clusters', fontsize=20)
@@ -114,6 +114,7 @@ st.pyplot(fig)
 
 st.subheader('Values')
 selection = st.selectbox('Select equipment:', ['weapon', 'chest', 'head', 'waist', 'foot', 'hand', 'neck', 'ring'])
+st.text("Look at distributions in each cluster.")
 dft = groups.groupby(f"{selection}_rarity")[selection].value_counts().reset_index(name='Count')
 fig, ax = plt.subplots(figsize = (20,8))
 plt.title(f"{selection}" + ' distributions')
