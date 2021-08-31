@@ -141,8 +141,11 @@ def main():
         df.style.set_properties(**{'text-align': 'left'}).set_table_styles([ dict(selector='th', props=[('text-align', 'left')] ) ])
         
         selection = st.selectbox('Select equipment:', ['weapon', 'chest', 'head', 'waist', 'foot', 'hand', 'neck', 'ring'])
-        
-        st.dataframe(df.groupby(f"{selection}_rarity")[selection].value_counts())
+        st.text('Mythics are 1 of 1s.')
+        col1, col2 = st.columns([3,1])
+        col1.dataframe(df.groupby(f"{selection}_rarity")[selection].value_counts())
+        col2.write(df[f"{selection}_rarity"].value_counts())
+
 
 
 if __name__ == "__main__":
