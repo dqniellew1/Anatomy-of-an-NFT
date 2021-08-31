@@ -38,8 +38,8 @@ st.subheader('Attribute Filter')
 #selection = st.selectbox('Select filter:', ['rarest','weapon', 'chest', 'head', 'waist', 'foot', 'hand', 'neck', 'ring'])
 
 #if selection == 'rarest':
-rarest = st.slider('How rare?', 1, 8000, (1, 10))
-query = df_filtered[df_filtered['rarest'].between(rarest[0], rarest[1])]
+#rarest = st.slider('How rare?', 1, 8000, (1, 10))
+#query = df_filtered[df_filtered['rarest'].between(rarest[0], rarest[1])]
 # elif selection == 'weapon':
 #     weapon = st.selectbox("Weapon", df_filtered['weapon'])
 #     query = df_filtered.query("weapon==@weapon")
@@ -65,13 +65,13 @@ query = df_filtered[df_filtered['rarest'].between(rarest[0], rarest[1])]
 #     ring = st.selectbox("ring",df_filtered['ring'])
 #     query = df_filtered.query("ring==@ring")
 
-st.write(query)
+#st.write(query)
 st.subheader('Supercharge filter')
 AgGrid(df_filtered)
 
 
 st.subheader("Loot Relationships")
-st.text('Dimensionality reduction and clustering to find relationship among loots')
+st.text('Dimensionality reduction and clustering to find relationships among loots')
 labels_tsne_scale = df['tsne_clusters']
 fig, ax = plt.subplots(figsize = (10,6), dpi=300)
 fig.suptitle('Loot clusters', fontsize=20)
@@ -90,8 +90,8 @@ groups = df.loc[df['tsne_clusters'] == clusters]
 col1, col2, col3 = st.columns(3)
 col1.metric(label="Group counts:", value=len(groups))
 col2.metric("Top loot:", value = str(groups['rarest'].min()))
-robe_count = groups.loc[groups['chest'] == 'Divine Robe', 'chest'].count()
-col3.metric("No divine robes", value= str(robe_count))
+eq_count = groups[groups['head'].str.contains("Demon")]
+col3.metric("No Demon crowns", value= len(eq_count))
 
 
 
