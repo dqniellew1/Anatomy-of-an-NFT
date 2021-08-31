@@ -87,11 +87,12 @@ cluster_no = range(0, 14)
 clusters = st.selectbox("Select cluster", cluster_no)
 
 groups = df.loc[df['tsne_clusters'] == clusters]
-col1, col2, col3 = st.columns(3)
+col1, col2, col3, col4 = st.columns(4)
 col1.metric(label="Group counts:", value=len(groups))
-col2.metric("Top loot:", value = str(groups['rarest'].min()))
+col2.metric("Highest rank loot:", value = str(groups['rarest'].min()))
+col3.metric("Lowest rank loot:", value = str(groups['rarest'].max()))
 eq_count = groups[groups['head'].str.contains("Demon")]
-col3.metric("No Demon crowns", value= len(eq_count))
+col4.metric("No Demon crowns", value= len(eq_count))
 
 
 
