@@ -35,7 +35,7 @@ def main():
         st.info("Click on Ξ in the column headings to sort and filter data.")
 
         df = load_data(DATA_URL)
-        df_filtered = df[['lootId','score', 'rarest', 'weapon', 'chest', 'head', 'waist', 'foot', 'hand', 'neck', 'ring']]
+        df_filtered = df[['lootId','score', 'rarest','weapon', 'chest', 'head', 'waist', 'foot', 'hand', 'neck', 'ring']]
         df.style.set_properties(**{'text-align': 'left'}).set_table_styles([ dict(selector='th', props=[('text-align', 'left')] ) ])
 
         st.subheader('Filter Loot')
@@ -48,44 +48,12 @@ def main():
         col3.write(id[['weapon_count','chest_count', 'head_count', 'waist_count', 'foot_count', 'hand_count', 'neck_count', 'ring_count']].T)
 
         st.subheader('Attribute Filter')
-
-        #selection = st.selectbox('Select filter:', ['rarest','weapon', 'chest', 'head', 'waist', 'foot', 'hand', 'neck', 'ring'])
-
-        #if selection == 'rarest':
-        #rarest = st.slider('How rare?', 1, 8000, (1, 10))
-        #query = df_filtered[df_filtered['rarest'].between(rarest[0], rarest[1])]
-        # elif selection == 'weapon':
-        #     weapon = st.selectbox("Weapon", df_filtered['weapon'])
-        #     query = df_filtered.query("weapon==@weapon")
-        # elif selection == 'chest':
-        #     chest = st.selectbox("Chest",df_filtered['chest'])
-        #     query = df_filtered.query("chest==@chest")
-        # elif selection == 'head':
-        #     head = st.selectbox("Head", df_filtered['head'])
-        #     query = df_filtered.query("head==@head")
-        # elif selection == 'waist':
-        #     waist = st.selectbox("Waist",df_filtered['waist'])
-        #     query = df_filtered.query("waist==@waist")
-        # elif selection == 'foot':
-        #     foot = st.selectbox("Foot", df_filtered['foot'])
-        #     query = df_filtered.query("foot==@foot")
-        # elif selection == 'hand':
-        #     hand = st.selectbox("Hand",df_filtered['hand'])
-        #     query = df_filtered.query("hand==@hand")
-        # elif selection == 'neck':
-        #     neck = st.selectbox("Neck", df_filtered['neck'])
-        #     query = df_filtered.query("neck==@neck")
-        # elif selection == 'ring':
-        #     ring = st.selectbox("ring",df_filtered['ring'])
-        #     query = df_filtered.query("ring==@ring")
-
-        #st.write(query)
         st.subheader('Supercharge filter')
         AgGrid(df_filtered)
 
-
         st.subheader("Loot Relationships")
         st.text('Dimensionality reduction and clustering to find relationships among loots')
+        st.text('Model found 14 loot families.')
         labels_tsne_scale = df['tsne_clusters']
         fig, ax = plt.subplots(figsize = (10,6), dpi=300)
         fig.suptitle('Loot clusters', fontsize=20)
@@ -99,14 +67,55 @@ def main():
 
         cluster_no = range(0, 14)
         clusters = st.selectbox("Select cluster", cluster_no)
-
         groups = df.loc[df['tsne_clusters'] == clusters]
+
+        st.subheader("Cluster statistics:")
         col1, col2, col3, col4 = st.columns(4)
         col1.metric(label="Group counts:", value=len(groups))
         col2.metric("Highest rank loot:", value = str(groups['rarest'].min()))
         col3.metric("Lowest rank loot:", value = str(groups['rarest'].max()))
         eq_count = groups[groups['head'].str.contains("Demon")]
         col4.metric("# Demon crowns", value= len(eq_count))
+
+        # Value counts key, value pairs
+        wepvalues = df['weapon'].value_counts().keys().tolist()
+        wepcounts = df['weapon'].value_counts().tolist()
+
+        chestvalues = df['chest'].value_counts().keys().tolist()
+        chestcounts = df['chest'].value_counts().tolist()
+
+        headvalues = df['head'].value_counts().keys().tolist()
+        headcounts = df['head'].value_counts().tolist()
+
+        waistvalues = df['waist'].value_counts().keys().tolist()
+        waistcounts = df['waist'].value_counts().tolist()
+
+        footvalues = df['foot'].value_counts().keys().tolist()
+        footcounts = df['foot'].value_counts().tolist()
+
+        handvalues = df['hand'].value_counts().keys().tolist()
+        handcounts = df['hand'].value_counts().tolist()
+
+        neckvalues = df['neck'].value_counts().keys().tolist()
+        neckcounts = df['neck'].value_counts().tolist()
+
+        ringvalues = df['ring'].value_counts().keys().tolist()
+        ringcounts = df['ring'].value_counts().tolist()
+
+        col21,col22 = st.columns(2)
+        col23, col24 = st.columns(2)
+        col25, col26 = st.columns(2)
+        col27, col28 = st.columns(2)
+        col21.metric(label="Most common weapon:", value=str(str(wepvalues[0]) + ': ' + str(wepcounts[0])))
+        col22.metric(label="Most common chest:", value=str(str(chestvalues[0]) + ': ' + str(chestcounts[0])))
+        col23.metric(label="Most common head:", value=str(str(headvalues[0]) + ': ' + str(headcounts[0])))
+        col24.metric(label="Most common waist:", value=str(str(waistvalues[0]) + ': ' + str(waistcounts[0])))
+        col25.metric(label="Most common foot:", value=str(str(footvalues[0]) + ': ' + str(footcounts[0])))
+        col26.metric(label="Most common hand:", value=str(str(handvalues[0]) + ': ' + str(handcounts[0])))
+        col27.metric(label="Most common neck:", value=str(str(neckvalues[0]) + ': ' + str(neckcounts[0])))
+        col28.metric(label="Most common ring:", value=str(str(ringvalues[0]) + ': ' + str(ringcounts[0])))
+
+
 
         st.text('Relationships open to interpretation.')
         AgGrid(groups[['lootId','score', 'rarest','sqdist','weapon', 'chest', 'head', 'waist', 'foot', 'hand', 'neck', 'ring']])
@@ -141,8 +150,13 @@ def main():
         df.style.set_properties(**{'text-align': 'left'}).set_table_styles([ dict(selector='th', props=[('text-align', 'left')] ) ])
         
         selection = st.selectbox('Select equipment:', ['weapon', 'chest', 'head', 'waist', 'foot', 'hand', 'neck', 'ring'])
-        st.text('Mythics are 1 of 1s.')
-        col1, col2 = st.columns([3,1])
+        st.text('Common items appear 375 or more times.')
+        st.text('Uncommon items appear less than 375 times.')
+        st.text('Rare items appear less than 358 times.')
+        st.text('Epic items appear less than 101 times.')
+        st.text('Legendary items appear less than 10 times.')
+        st.text('Mythic items appear exactly 1 time.')
+        col1, col2 = st.columns([3,2])
         col1.dataframe(df.groupby(f"{selection}_rarity")[selection].value_counts())
         col2.write(df[f"{selection}_rarity"].value_counts())
 
