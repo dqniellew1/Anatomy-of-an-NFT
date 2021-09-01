@@ -14,11 +14,13 @@ st.set_page_config(
 )
 
 DATA_URL = "data/loot_updated1.parquet"
+ADD_URL = "data/address.parquet"
 
 @st.cache
 def load_data(DATA_URL):
     data = pd.read_parquet(DATA_URL)
-    return data
+    address = pd.read_parquet(ADD_URL)
+    return data, address
 
 st.title('Loot Universe')
 
@@ -27,6 +29,10 @@ PAGES = (
     "Relationships",
     "Attributes sheet"
 )
+
+#pd.merge(df, address, left_index=True, right_index=True, left_on='lootId', right_on='loot_id )
+
+
 def main():
     st.sidebar.title("Navigation")
     page = st.sidebar.radio('Page',PAGES)
@@ -35,9 +41,8 @@ def main():
         st.subheader('How to use?')
         st.info("Click on Ξ in the column headings to sort and filter data.")
 
-        df = load_data(DATA_URL)
+        df, add = load_data(DATA_URL)
         df_filtered = df[['lootId','score', 'rarest','weapon', 'chest', 'head', 'waist', 'foot', 'hand', 'neck', 'ring']]
-
         st.subheader('Filter Loot')
         LootId = st.text_input('Enter loot ID:', 1)
         id = df.loc[df['lootId'] == int(LootId)]
@@ -46,6 +51,17 @@ def main():
         col1.write(id[['weapon', 'chest', 'head', 'waist', 'foot', 'hand', 'neck', 'ring']].T)
         col2.write(id[['weapon_rarity','chest_rarity', 'head_rarity', 'waist_rarity', 'foot_rarity', 'hand_rarity', 'neck_rarity', 'ring_rarity']].T)
         col3.write(id[['weapon_count','chest_count', 'head_count', 'waist_count', 'foot_count', 'hand_count', 'neck_count', 'ring_count']].T)
+        
+        st.markdown('##')
+        st.subheader("Wallet profiler")
+        wallet = pd.merge(df, add, left_index=True, right_index=True, left_on='lootId', right_on='loot_id')
+        addID = st.text_input('Enter wallet address:', str('0xC6c41119Af1e0840357245c66baAf0e21B694D4d').lower())
+        address = wallet.loc[wallet['address'] == str(f"{addID}").lower()]
+        st.write(address[['lootId','score', 'rarest']])
+        st.write(address[['weapon', 'chest', 'head', 'waist', 'foot', 'hand', 'neck', 'ring']])
+        st.write(address[['weapon_rarity','chest_rarity', 'head_rarity', 'waist_rarity', 'foot_rarity', 'hand_rarity', 'neck_rarity', 'ring_rarity']])
+        st.write(address[['weapon_count','chest_count', 'head_count', 'waist_count', 'foot_count', 'hand_count', 'neck_count', 'ring_count']])
+        
         st.markdown('#')
         st.subheader('Attribute Filter')
         st.subheader('Supercharge filter')
@@ -53,7 +69,7 @@ def main():
         st.markdown('#')
 
     if page == "Relationships":
-        df = load_data(DATA_URL)
+        df, _ = load_data(DATA_URL)
         df_filtered = df[['lootId','score', 'rarest','weapon', 'chest', 'head', 'waist', 'foot', 'hand', 'neck', 'ring']]
 
         st.title("Loot Relationships")
@@ -153,7 +169,7 @@ def main():
     
     if page == 'Attributes sheet':
         st.title('Attibutes sheet')
-        df = load_data(DATA_URL)
+        df, _ = load_data(DATA_URL)
         df_filtered = df[['lootId','score', 'rarest', 'weapon', 'chest', 'head', 'waist', 'foot', 'hand', 'neck', 'ring']]        
         selection = st.selectbox('Select equipment:', ['weapon', 'chest', 'head', 'waist', 'foot', 'hand', 'neck', 'ring'])
         st.text('Common items appear 375 or more times.')
