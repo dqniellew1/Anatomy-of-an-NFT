@@ -13,7 +13,7 @@ st.set_page_config(
      initial_sidebar_state="expanded",
 )
 
-DATA_URL = "data/loot_updated.parquet"
+DATA_URL = "data/loot_updated1.parquet"
 
 @st.cache
 def load_data(DATA_URL):
@@ -24,6 +24,7 @@ st.title('Loot Universe')
 
 PAGES = (
     "Filter tool",
+    "Relationships",
     "Attributes sheet"
 )
 def main():
@@ -36,7 +37,6 @@ def main():
 
         df = load_data(DATA_URL)
         df_filtered = df[['lootId','score', 'rarest','weapon', 'chest', 'head', 'waist', 'foot', 'hand', 'neck', 'ring']]
-        df.style.set_properties(**{'text-align': 'left'}).set_table_styles([ dict(selector='th', props=[('text-align', 'left')] ) ])
 
         st.subheader('Filter Loot')
         LootId = st.text_input('Enter loot ID:', 1)
@@ -46,12 +46,17 @@ def main():
         col1.write(id[['weapon', 'chest', 'head', 'waist', 'foot', 'hand', 'neck', 'ring']].T)
         col2.write(id[['weapon_rarity','chest_rarity', 'head_rarity', 'waist_rarity', 'foot_rarity', 'hand_rarity', 'neck_rarity', 'ring_rarity']].T)
         col3.write(id[['weapon_count','chest_count', 'head_count', 'waist_count', 'foot_count', 'hand_count', 'neck_count', 'ring_count']].T)
-
+        st.markdown('#')
         st.subheader('Attribute Filter')
         st.subheader('Supercharge filter')
         AgGrid(df_filtered)
+        st.markdown('#')
 
-        st.subheader("Loot Relationships")
+    if page == "Relationships":
+        df = load_data(DATA_URL)
+        df_filtered = df[['lootId','score', 'rarest','weapon', 'chest', 'head', 'waist', 'foot', 'hand', 'neck', 'ring']]
+
+        st.title("Loot Relationships")
         st.text('Dimensionality reduction and clustering to find relationships among loots')
         st.text('Model found 14 loot families.')
         labels_tsne_scale = df['tsne_clusters']
@@ -78,47 +83,49 @@ def main():
         col4.metric("# Demon crowns", value= len(eq_count))
 
         # Value counts key, value pairs
-        wepvalues = df['weapon'].value_counts().keys().tolist()
-        wepcounts = df['weapon'].value_counts().tolist()
+        wepvalues = groups['weapon'].value_counts().keys().tolist()
+        wepcounts = groups['weapon'].value_counts().tolist()
 
-        chestvalues = df['chest'].value_counts().keys().tolist()
-        chestcounts = df['chest'].value_counts().tolist()
+        chestvalues = groups['chest'].value_counts().keys().tolist()
+        chestcounts = groups['chest'].value_counts().tolist()
 
-        headvalues = df['head'].value_counts().keys().tolist()
-        headcounts = df['head'].value_counts().tolist()
+        headvalues = groups['head'].value_counts().keys().tolist()
+        headcounts = groups['head'].value_counts().tolist()
 
-        waistvalues = df['waist'].value_counts().keys().tolist()
-        waistcounts = df['waist'].value_counts().tolist()
+        waistvalues = groups['waist'].value_counts().keys().tolist()
+        waistcounts = groups['waist'].value_counts().tolist()
 
-        footvalues = df['foot'].value_counts().keys().tolist()
-        footcounts = df['foot'].value_counts().tolist()
+        footvalues = groups['foot'].value_counts().keys().tolist()
+        footcounts = groups['foot'].value_counts().tolist()
 
-        handvalues = df['hand'].value_counts().keys().tolist()
-        handcounts = df['hand'].value_counts().tolist()
+        handvalues = groups['hand'].value_counts().keys().tolist()
+        handcounts = groups['hand'].value_counts().tolist()
 
-        neckvalues = df['neck'].value_counts().keys().tolist()
-        neckcounts = df['neck'].value_counts().tolist()
+        neckvalues = groups['neck'].value_counts().keys().tolist()
+        neckcounts = groups['neck'].value_counts().tolist()
 
-        ringvalues = df['ring'].value_counts().keys().tolist()
-        ringcounts = df['ring'].value_counts().tolist()
+        ringvalues = groups['ring'].value_counts().keys().tolist()
+        ringcounts = groups['ring'].value_counts().tolist()
 
-        col21,col22 = st.columns(2)
-        col23, col24 = st.columns(2)
-        col25, col26 = st.columns(2)
-        col27, col28 = st.columns(2)
-        col21.metric(label="Most common weapon:", value=str(str(wepvalues[0]) + ': ' + str(wepcounts[0])))
-        col22.metric(label="Most common chest:", value=str(str(chestvalues[0]) + ': ' + str(chestcounts[0])))
-        col23.metric(label="Most common head:", value=str(str(headvalues[0]) + ': ' + str(headcounts[0])))
-        col24.metric(label="Most common waist:", value=str(str(waistvalues[0]) + ': ' + str(waistcounts[0])))
-        col25.metric(label="Most common foot:", value=str(str(footvalues[0]) + ': ' + str(footcounts[0])))
-        col26.metric(label="Most common hand:", value=str(str(handvalues[0]) + ': ' + str(handcounts[0])))
-        col27.metric(label="Most common neck:", value=str(str(neckvalues[0]) + ': ' + str(neckcounts[0])))
-        col28.metric(label="Most common ring:", value=str(str(ringvalues[0]) + ': ' + str(ringcounts[0])))
+        col21, col22 = st.columns([2,1])
+        col23, col24 = st.columns([2,1])
+        col25, col26 = st.columns([2,1])
+        col27, col28 = st.columns([2,1])
 
-
-
-        st.text('Relationships open to interpretation.')
+        col21.text(str('Most common weapon: ' + str(str(wepvalues[0]) + ': ' + str(wepcounts[0]))))
+        col22.text(str('Most common chest: ' + str(str(chestvalues[0]) + ': ' + str(chestcounts[0]))))
+        col23.text(str("Most common head: " + str(str(headvalues[0]) + ': ' + str(headcounts[0]))))
+        col24.text(str("Most common waist: " + str(str(waistvalues[0]) + ': ' + str(waistcounts[0]))))
+        col25.text(str("Most common foot: " + str(str(footvalues[0]) + ': ' + str(footcounts[0]))))
+        col26.text(str("Most common hand: " + str(str(handvalues[0]) + ': ' + str(handcounts[0]))))
+        col27.text(str("Most common neck: " + str(str(neckvalues[0]) + ': ' + str(neckcounts[0]))))
+        col28.text(str("Most common ring: " + str(str(ringvalues[0]) + ': ' + str(ringcounts[0]))))
+        st.markdown('##')
+        st.write('--')
+        st.text('The relationships between each loot are open to interpretations.')
         AgGrid(groups[['lootId','score', 'rarest','sqdist','weapon', 'chest', 'head', 'waist', 'foot', 'hand', 'neck', 'ring']])
+
+        st.markdown('##')
         selection = st.selectbox('Select equipment:', ['weapon_rarity', 'chest_rarity', 'head_rarity', 'waist_rarity', 'foot_rarity', 'hand_rarity', 'neck_rarity', 'ring_rarity'])
         st.text("Look at different categories in each cluster.")
         eq = df[selection]
@@ -131,7 +138,7 @@ def main():
         fig.tight_layout()
         st.pyplot(fig)
 
-        st.subheader('Values')
+        st.markdown('##')
         selection = st.selectbox('Select equipment:', ['weapon', 'chest', 'head', 'waist', 'foot', 'hand', 'neck', 'ring'])
         st.text("Look at distributions in each cluster.")
         dft = groups.groupby(f"{selection}_rarity")[selection].value_counts().reset_index(name='Count')
@@ -145,10 +152,9 @@ def main():
         st.pyplot(fig)
     
     if page == 'Attributes sheet':
+        st.title('Attibutes sheet')
         df = load_data(DATA_URL)
-        df_filtered = df[['lootId','score', 'rarest', 'weapon', 'chest', 'head', 'waist', 'foot', 'hand', 'neck', 'ring']]
-        df.style.set_properties(**{'text-align': 'left'}).set_table_styles([ dict(selector='th', props=[('text-align', 'left')] ) ])
-        
+        df_filtered = df[['lootId','score', 'rarest', 'weapon', 'chest', 'head', 'waist', 'foot', 'hand', 'neck', 'ring']]        
         selection = st.selectbox('Select equipment:', ['weapon', 'chest', 'head', 'waist', 'foot', 'hand', 'neck', 'ring'])
         st.text('Common items appear 375 or more times.')
         st.text('Uncommon items appear less than 375 times.')
