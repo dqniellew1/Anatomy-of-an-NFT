@@ -30,8 +30,22 @@ PAGES = (
     "Attributes sheet"
 )
 
-#pd.merge(df, address, left_index=True, right_index=True, left_on='lootId', right_on='loot_id )
-
+def color_rarity(val):
+    if val == 'common':
+        color = 'gray' 
+    elif val == 'uncommon':
+        color = 'limegreen'
+    elif val == 'rare':
+        color = 'blue'
+    elif val == 'epic':
+        color = 'purple'
+    elif val == 'legendary':
+        color = 'orange'
+    elif val == 'mythic':
+        color = 'hotpink'
+    else:
+        color = ''
+    return f'background-color: {color}'
 
 def main():
     st.sidebar.title("Navigation")
@@ -42,6 +56,7 @@ def main():
         st.info("Click on Ξ in the column headings to sort and filter data.")
 
         df, add = load_data(DATA_URL)
+        
         df_filtered = df[['lootId','score', 'rarest','weapon', 'chest', 'head', 'waist', 'foot', 'hand', 'neck', 'ring']]
         st.subheader('Filter Loot')
         LootId = st.text_input('Enter loot ID:', 1)
@@ -49,7 +64,7 @@ def main():
         st.write(id[['lootId','score', 'rarest']])
         col1, col2, col3 = st.columns([6,4,3])
         col1.write(id[['weapon', 'chest', 'head', 'waist', 'foot', 'hand', 'neck', 'ring']].T)
-        col2.write(id[['weapon_rarity','chest_rarity', 'head_rarity', 'waist_rarity', 'foot_rarity', 'hand_rarity', 'neck_rarity', 'ring_rarity']].T)
+        col2.write(id[['weapon_rarity','chest_rarity', 'head_rarity', 'waist_rarity', 'foot_rarity', 'hand_rarity', 'neck_rarity', 'ring_rarity']].T.style.applymap(color_rarity))
         col3.write(id[['weapon_count','chest_count', 'head_count', 'waist_count', 'foot_count', 'hand_count', 'neck_count', 'ring_count']].T)
         
         st.markdown('##')
@@ -59,7 +74,7 @@ def main():
         address = wallet.loc[wallet['address'] == str(f"{addID}").lower()]
         st.write(address[['lootId','score', 'rarest']])
         st.write(address[['weapon', 'chest', 'head', 'waist', 'foot', 'hand', 'neck', 'ring']])
-        st.write(address[['weapon_rarity','chest_rarity', 'head_rarity', 'waist_rarity', 'foot_rarity', 'hand_rarity', 'neck_rarity', 'ring_rarity']])
+        st.write(address[['weapon_rarity','chest_rarity', 'head_rarity', 'waist_rarity', 'foot_rarity', 'hand_rarity', 'neck_rarity', 'ring_rarity']].style.applymap(color_rarity))
         st.write(address[['weapon_count','chest_count', 'head_count', 'waist_count', 'foot_count', 'hand_count', 'neck_count', 'ring_count']])
         
         st.markdown('#')
