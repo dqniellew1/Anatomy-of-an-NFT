@@ -21,9 +21,9 @@ def load_data(DATA_URL):
     data = pd.read_parquet(DATA_URL)
     address = pd.read_parquet(ADD_URL)
     data['lootId'] = data['lootId'].astype(int)
+    address["token_id"] = address["token_id"].astype(int)
     data.rename(columns={"score_x": "loot_score", "score":"card_score", 
     "rarest": 'loot_rank', "rank":"score_rank"}, inplace=True)
-    address["token_id"] = address["token_id"].astype(int)
     return data, address
 
 st.title('Loot Universe')
