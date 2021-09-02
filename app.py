@@ -88,8 +88,8 @@ def main():
         st.subheader('Supercharge filter')
         AgGrid(df_filtered)
         st.markdown('##')
-        st.subheader('Ability score filter')
-        AgGrid(df[['lootId','card_score', 'score_rank']])
+        #st.subheader('Ability score filter')
+        #AgGrid(df[['lootId','card_score', 'score_rank']])
 
     if page == "Relationships":
         df, _ = load_data(DATA_URL)
