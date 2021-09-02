@@ -23,7 +23,7 @@ def load_data(DATA_URL):
     data['lootId'] = data['lootId'].astype(int)
     address["token_id"] = address["token_id"].astype(int)
     data.rename(columns={"score_x": "loot_score", "score":"card_score", 
-    "rarest": 'loot_rank', "rank":"score_rank"}, inplace=True)
+    "rarest": 'loot_rank', "rank":"ability_rank"}, inplace=True)
     return data, address
 
 st.title('Loot Universe')
@@ -61,7 +61,7 @@ def main():
         st.info("Click on Ξ in the column headings to sort and filter data.")
 
         df, add = load_data(DATA_URL)
-        df_filtered = df[['lootId','loot_score', 'loot_rank','weapon', 'chest', 'head', 'waist', 'foot', 'hand', 'neck', 'ring']]
+        df_filtered = df[['lootId','loot_score', 'loot_rank','weapon', 'chest', 'head', 'waist', 'foot', 'hand', 'neck', 'ring', 'card_score', 'ability_rank']]
         st.subheader('Filter Loot')
         LootId = st.text_input('Enter loot ID:', 1)
         id = df.loc[df['lootId'] == int(LootId)]
@@ -71,14 +71,14 @@ def main():
         col2.write(id[['weapon_rarity','chest_rarity', 'head_rarity', 'waist_rarity', 'foot_rarity', 'hand_rarity', 'neck_rarity', 'ring_rarity']].T.style.applymap(color_rarity))
         col3.write(id[['weapon_count','chest_count', 'head_count', 'waist_count', 'foot_count', 'hand_count', 'neck_count', 'ring_count']].T)
         st.text('Ability score rank')
-        st.write(id[['lootId','card_score', 'score_rank']])
+        st.write(id[['lootId','card_score', 'ability_rank']])
         st.markdown('##')
         st.subheader("Wallet profiler")
        
         wallet = pd.merge(df, add, left_on='lootId', right_on='token_id')
         addID = st.text_input('Enter wallet address:', str('0xC6c41119Af1e0840357245c66baAf0e21B694D4d').lower())
         address = wallet.loc[wallet['address'] == str(f"{addID}").lower()]
-        st.write(address[['lootId','loot_score', 'loot_rank', 'card_score', 'score_rank']])
+        st.write(address[['lootId','loot_score', 'loot_rank', 'card_score', 'ability_rank']])
         st.write(address[['weapon', 'chest', 'head', 'waist', 'foot', 'hand', 'neck', 'ring']])
         st.write(address[['weapon_rarity','chest_rarity', 'head_rarity', 'waist_rarity', 'foot_rarity', 'hand_rarity', 'neck_rarity', 'ring_rarity']].style.applymap(color_rarity))
         st.write(address[['weapon_count','chest_count', 'head_count', 'waist_count', 'foot_count', 'hand_count', 'neck_count', 'ring_count']])
@@ -89,7 +89,7 @@ def main():
         AgGrid(df_filtered)
         st.markdown('##')
         #st.subheader('Ability score filter')
-        #AgGrid(df[['lootId','card_score', 'score_rank']])
+        #AgGrid(df[['lootId','card_score', 'ability_rank']])
 
     if page == "Relationships":
         df, _ = load_data(DATA_URL)
