@@ -29,9 +29,9 @@ def load_data(DATA_URL):
 st.title('Loot Universe')
 PAGES = (
     "Filter tool",
-    "Relationships",
-    "Attributes sheet"
-)
+    "Relationships"
+    
+)#"Attributes sheet"
 
 @st.cache
 def color_rarity(val):
@@ -190,20 +190,20 @@ def main():
         fig.tight_layout()
         st.pyplot(fig)
     
-    if page == 'Attributes sheet':
-        st.subheader('Attibutes sheet')
-        df, _ = load_data(DATA_URL)
-        df_filtered = df[['lootId','loot_score', 'loot_rank', 'weapon', 'chest', 'head', 'waist', 'foot', 'hand', 'neck', 'ring']]        
-        selection = st.selectbox('Select equipment:', ['weapon', 'chest', 'head', 'waist', 'foot', 'hand', 'neck', 'ring'])
-        st.text('Common items appear 375 or more times.')
-        st.text('Uncommon items appear less than 375 times.')
-        st.text('Rare items appear less than 358 times.')
-        st.text('Epic items appear less than 101 times.')
-        st.text('Legendary items appear less than 10 times.')
-        st.text('Mythic items appear exactly 1 time.')
-        col1, col2 = st.columns([3,2])
-        col1.dataframe(df.groupby(f"{selection}_rarity")[selection].value_counts())
-        #col2.write(df[f"{selection}_rarity"].value_counts())
+    # if page == 'Attributes sheet':
+    #     st.subheader('Attibutes sheet')
+    #     df, _ = load_data(DATA_URL)
+    #     df_filtered = df[['lootId','loot_score', 'loot_rank', 'weapon', 'chest', 'head', 'waist', 'foot', 'hand', 'neck', 'ring']]        
+    #     selection = st.selectbox('Select equipment:', ['weapon', 'chest', 'head', 'waist', 'foot', 'hand', 'neck', 'ring'])
+    #     st.text('Common items appear 375 or more times.')
+    #     st.text('Uncommon items appear less than 375 times.')
+    #     st.text('Rare items appear less than 358 times.')
+    #     st.text('Epic items appear less than 101 times.')
+    #     st.text('Legendary items appear less than 10 times.')
+    #     st.text('Mythic items appear exactly 1 time.')
+    #     col1, col2 = st.columns([3,2])
+    #     col1.dataframe(df.groupby(f"{selection}_rarity")[selection].value_counts())
+    #     #col2.write(df[f"{selection}_rarity"].value_counts())
 
 
 
