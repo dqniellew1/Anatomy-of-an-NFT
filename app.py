@@ -203,7 +203,7 @@ def main():
         st.text('Mythic items appear exactly 1 time.')
         col1, col2 = st.columns([3,2])
         col1.dataframe(df.groupby(f"{selection}_rarity")[selection].value_counts())
-        col2.write(df[f"{selection}_rarity"].value_counts())
+        #col2.write(df[f"{selection}_rarity"].value_counts())
 
 
 
