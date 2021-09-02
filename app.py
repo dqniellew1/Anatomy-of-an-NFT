@@ -20,10 +20,13 @@ ADD_URL = "data/address.parquet"
 def load_data(DATA_URL):
     data = pd.read_parquet(DATA_URL)
     address = pd.read_parquet(ADD_URL)
+    data['lootId'] = data['lootId'].astype(int)
+    data.rename(columns={"score_x": "loot_score", "score":"card_score", 
+    "rarest": 'loot_rank', "rank":"score_rank"}, inplace=True)
+    address["token_id"] = address["token_id"].astype(int)
     return data, address
 
 st.title('Loot Universe')
-
 PAGES = (
     "Filter tool",
     "Relationships",
@@ -52,27 +55,30 @@ def main():
     page = st.sidebar.radio('Page',PAGES)
 
     if page == 'Filter tool':
+        st.subheader('Filter your loot and ability scores.')
         st.subheader('How to use?')
         st.info("Click on Ξ in the column headings to sort and filter data.")
 
         df, add = load_data(DATA_URL)
-        
-        df_filtered = df[['lootId','score', 'rarest','weapon', 'chest', 'head', 'waist', 'foot', 'hand', 'neck', 'ring']]
+        st.write(df)
+        df_filtered = df[['lootId','loot_score', 'loot_rank','weapon', 'chest', 'head', 'waist', 'foot', 'hand', 'neck', 'ring']]
         st.subheader('Filter Loot')
         LootId = st.text_input('Enter loot ID:', 1)
         id = df.loc[df['lootId'] == int(LootId)]
-        st.write(id[['lootId','score', 'rarest']])
+        st.write(id[['lootId','loot_score', 'loot_rank']])
         col1, col2, col3 = st.columns([6,4,3])
         col1.write(id[['weapon', 'chest', 'head', 'waist', 'foot', 'hand', 'neck', 'ring']].T)
         col2.write(id[['weapon_rarity','chest_rarity', 'head_rarity', 'waist_rarity', 'foot_rarity', 'hand_rarity', 'neck_rarity', 'ring_rarity']].T.style.applymap(color_rarity))
         col3.write(id[['weapon_count','chest_count', 'head_count', 'waist_count', 'foot_count', 'hand_count', 'neck_count', 'ring_count']].T)
-        
+        st.text('Ability score rank')
+        st.write(id[['lootId','card_score', 'score_rank']])
         st.markdown('##')
         st.subheader("Wallet profiler")
-        wallet = pd.merge(df, add, left_index=True, right_index=True, left_on='lootId', right_on='loot_id')
+       
+        wallet = pd.merge(df, add, left_on='lootId', right_on='token_id')
         addID = st.text_input('Enter wallet address:', str('0xC6c41119Af1e0840357245c66baAf0e21B694D4d').lower())
         address = wallet.loc[wallet['address'] == str(f"{addID}").lower()]
-        st.write(address[['lootId','score', 'rarest']])
+        st.write(address[['lootId','loot_score', 'loot_rank', 'card_score', 'score_rank']])
         st.write(address[['weapon', 'chest', 'head', 'waist', 'foot', 'hand', 'neck', 'ring']])
         st.write(address[['weapon_rarity','chest_rarity', 'head_rarity', 'waist_rarity', 'foot_rarity', 'hand_rarity', 'neck_rarity', 'ring_rarity']].style.applymap(color_rarity))
         st.write(address[['weapon_count','chest_count', 'head_count', 'waist_count', 'foot_count', 'hand_count', 'neck_count', 'ring_count']])
@@ -82,12 +88,14 @@ def main():
         st.subheader('Supercharge filter')
         AgGrid(df_filtered)
         st.markdown('#')
+        st.subheader('Ability score')
+        AgGrid(df[['lootId','card_score', 'score_rank']])
 
     if page == "Relationships":
         df, _ = load_data(DATA_URL)
-        df_filtered = df[['lootId','score', 'rarest','weapon', 'chest', 'head', 'waist', 'foot', 'hand', 'neck', 'ring']]
+        df_filtered = df[['lootId','loot_score', 'loot_rank','weapon', 'chest', 'head', 'waist', 'foot', 'hand', 'neck', 'ring']]
 
-        st.title("Loot Relationships")
+        st.subheader("Loot Relationships")
         st.text('Dimensionality reduction and clustering to find relationships among loots')
         st.text('Model found 14 loot families.')
         labels_tsne_scale = df['tsne_clusters']
@@ -108,8 +116,8 @@ def main():
         st.subheader("Cluster statistics:")
         col1, col2, col3, col4 = st.columns(4)
         col1.metric(label="Group counts:", value=len(groups))
-        col2.metric("Highest rank loot:", value = str(groups['rarest'].min()))
-        col3.metric("Lowest rank loot:", value = str(groups['rarest'].max()))
+        col2.metric("Highest rank loot:", value = str(groups['loot_rank'].min()))
+        col3.metric("Lowest rank loot:", value = str(groups['loot_rank'].max()))
         eq_count = groups[groups['head'].str.contains("Demon")]
         col4.metric("# Demon crowns", value= len(eq_count))
 
@@ -154,7 +162,7 @@ def main():
         st.markdown('##')
         st.write('--')
         st.text('The relationships between each loot are open to interpretations.')
-        AgGrid(groups[['lootId','score', 'rarest','sqdist','weapon', 'chest', 'head', 'waist', 'foot', 'hand', 'neck', 'ring']])
+        AgGrid(groups[['lootId','loot_score', 'loot_rank','sqdist','weapon', 'chest', 'head', 'waist', 'foot', 'hand', 'neck', 'ring']])
 
         st.markdown('##')
         selection = st.selectbox('Select equipment:', ['weapon_rarity', 'chest_rarity', 'head_rarity', 'waist_rarity', 'foot_rarity', 'hand_rarity', 'neck_rarity', 'ring_rarity'])
@@ -183,9 +191,9 @@ def main():
         st.pyplot(fig)
     
     if page == 'Attributes sheet':
-        st.title('Attibutes sheet')
+        st.subheader('Attibutes sheet')
         df, _ = load_data(DATA_URL)
-        df_filtered = df[['lootId','score', 'rarest', 'weapon', 'chest', 'head', 'waist', 'foot', 'hand', 'neck', 'ring']]        
+        df_filtered = df[['lootId','loot_score', 'loot_rank', 'weapon', 'chest', 'head', 'waist', 'foot', 'hand', 'neck', 'ring']]        
         selection = st.selectbox('Select equipment:', ['weapon', 'chest', 'head', 'waist', 'foot', 'hand', 'neck', 'ring'])
         st.text('Common items appear 375 or more times.')
         st.text('Uncommon items appear less than 375 times.')
