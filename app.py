@@ -6,12 +6,12 @@ from skimage import io
 import seaborn as sns
 from st_aggrid import AgGrid
 
+
 st.set_page_config(
      page_title="Loot Universe",
      page_icon="🧊",
      layout="wide",
-     initial_sidebar_state="expanded",
-)
+     initial_sidebar_state="expanded",)
 
 DATA_URL = "data/loot_updated1.parquet"
 ADD_URL = "data/address.parquet"
@@ -33,6 +33,7 @@ PAGES = (
     "Attributes sheet"
 )
 
+@st.cache
 def color_rarity(val):
     if val == 'common':
         color = 'gray' 
@@ -117,7 +118,7 @@ def main():
         col1.metric(label="Group counts:", value=len(groups))
         col2.metric("Highest rank loot:", value = str(groups['loot_rank'].min()))
         col3.metric("Lowest rank loot:", value = str(groups['loot_rank'].max()))
-        eq_count = groups[groups['head'].str.contains("Demon")]
+        eq_count = groups[groups['head'].str.contains("Demon Crown")]
         col4.metric("# Demon crowns", value= len(eq_count))
 
         # Value counts key, value pairs
@@ -161,7 +162,7 @@ def main():
         st.markdown('##')
         st.write('--')
         st.text('The relationships between each loot are open to interpretations.')
-        AgGrid(groups[['lootId','loot_score', 'loot_rank','sqdist','weapon', 'chest', 'head', 'waist', 'foot', 'hand', 'neck', 'ring']])
+        #AgGrid(groups[['lootId','loot_score', 'loot_rank','sqdist','weapon', 'chest', 'head', 'waist', 'foot', 'hand', 'neck', 'ring']])
 
         st.markdown('##')
         selection = st.selectbox('Select equipment:', ['weapon_rarity', 'chest_rarity', 'head_rarity', 'waist_rarity', 'foot_rarity', 'hand_rarity', 'neck_rarity', 'ring_rarity'])
