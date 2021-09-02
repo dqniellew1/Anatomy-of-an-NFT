@@ -60,7 +60,6 @@ def main():
         st.info("Click on Ξ in the column headings to sort and filter data.")
 
         df, add = load_data(DATA_URL)
-        st.write(df)
         df_filtered = df[['lootId','loot_score', 'loot_rank','weapon', 'chest', 'head', 'waist', 'foot', 'hand', 'neck', 'ring']]
         st.subheader('Filter Loot')
         LootId = st.text_input('Enter loot ID:', 1)
@@ -87,8 +86,8 @@ def main():
         st.subheader('Attribute Filter')
         st.subheader('Supercharge filter')
         AgGrid(df_filtered)
-        st.markdown('#')
-        st.subheader('Ability score')
+        st.markdown('##')
+        st.subheader('Ability score filter')
         AgGrid(df[['lootId','card_score', 'score_rank']])
 
     if page == "Relationships":
