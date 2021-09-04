@@ -28,10 +28,7 @@ def load_data(DATA_URL):
 
 st.title('Loot Universe')
 PAGES = (
-    "Filter tool",
-    "Relationships"
-    
-)#"Attributes sheet"
+    "Filter tool")#"Attributes sheet",  "Relationships"
 
 @st.cache
 def color_rarity(val):
@@ -91,104 +88,104 @@ def main():
         #st.subheader('Ability score filter')
         #AgGrid(df[['lootId','card_score', 'ability_rank']])
 
-    if page == "Relationships":
-        df, _ = load_data(DATA_URL)
-        df_filtered = df[['lootId','loot_score', 'loot_rank','weapon', 'chest', 'head', 'waist', 'foot', 'hand', 'neck', 'ring']]
+    # if page == "Relationships":
+    #     df, _ = load_data(DATA_URL)
+    #     df_filtered = df[['lootId','loot_score', 'loot_rank','weapon', 'chest', 'head', 'waist', 'foot', 'hand', 'neck', 'ring']]
 
-        st.subheader("Loot Relationships")
-        st.text('Dimensionality reduction and clustering to find relationships among loots')
-        st.text('Model found 14 loot families.')
-        labels_tsne_scale = df['tsne_clusters']
-        fig, ax = plt.subplots(figsize = (10,6), dpi=300)
-        fig.suptitle('Loot clusters', fontsize=20)
-        sns.scatterplot(df.loc[:,'tsne1'],df.loc[:,'tsne2'],hue=labels_tsne_scale, palette='Set1', s=100, alpha=0.6)
-        plt.xlabel('Dimension 1', fontsize=12)
-        plt.ylabel('Dimension 2', fontsize=12)
-        plt.legend()
-        fig.tight_layout()
-        st.pyplot(fig)
-        st.caption('Loots plotted on 2 dimensions')
+    #     st.subheader("Loot Relationships")
+    #     st.text('Dimensionality reduction and clustering to find relationships among loots')
+    #     st.text('Model found 14 loot families.')
+    #     labels_tsne_scale = df['tsne_clusters']
+    #     fig, ax = plt.subplots(figsize = (10,6), dpi=300)
+    #     fig.suptitle('Loot clusters', fontsize=20)
+    #     sns.scatterplot(df.loc[:,'tsne1'],df.loc[:,'tsne2'],hue=labels_tsne_scale, palette='Set1', s=100, alpha=0.6)
+    #     plt.xlabel('Dimension 1', fontsize=12)
+    #     plt.ylabel('Dimension 2', fontsize=12)
+    #     plt.legend()
+    #     fig.tight_layout()
+    #     st.pyplot(fig)
+    #     st.caption('Loots plotted on 2 dimensions')
 
-        cluster_no = range(0, 14)
-        clusters = st.selectbox("Select cluster", cluster_no)
-        groups = df.loc[df['tsne_clusters'] == clusters]
+    #     cluster_no = range(0, 14)
+    #     clusters = st.selectbox("Select cluster", cluster_no)
+    #     groups = df.loc[df['tsne_clusters'] == clusters]
 
-        st.subheader("Cluster statistics:")
-        col1, col2, col3, col4 = st.columns(4)
-        col1.metric(label="Group counts:", value=len(groups))
-        col2.metric("Highest rank loot:", value = str(groups['loot_rank'].min()))
-        col3.metric("Lowest rank loot:", value = str(groups['loot_rank'].max()))
-        eq_count = groups[groups['head'].str.contains("Demon Crown")]
-        col4.metric("# Demon crowns", value= len(eq_count))
+    #     st.subheader("Cluster statistics:")
+    #     col1, col2, col3, col4 = st.columns(4)
+    #     col1.metric(label="Group counts:", value=len(groups))
+    #     col2.metric("Highest rank loot:", value = str(groups['loot_rank'].min()))
+    #     col3.metric("Lowest rank loot:", value = str(groups['loot_rank'].max()))
+    #     eq_count = groups[groups['head'].str.contains("Demon Crown")]
+    #     col4.metric("# Demon crowns", value= len(eq_count))
 
-        # Value counts key, value pairs
-        wepvalues = groups['weapon'].value_counts().keys().tolist()
-        wepcounts = groups['weapon'].value_counts().tolist()
+    #     # Value counts key, value pairs
+    #     wepvalues = groups['weapon'].value_counts().keys().tolist()
+    #     wepcounts = groups['weapon'].value_counts().tolist()
 
-        chestvalues = groups['chest'].value_counts().keys().tolist()
-        chestcounts = groups['chest'].value_counts().tolist()
+    #     chestvalues = groups['chest'].value_counts().keys().tolist()
+    #     chestcounts = groups['chest'].value_counts().tolist()
 
-        headvalues = groups['head'].value_counts().keys().tolist()
-        headcounts = groups['head'].value_counts().tolist()
+    #     headvalues = groups['head'].value_counts().keys().tolist()
+    #     headcounts = groups['head'].value_counts().tolist()
 
-        waistvalues = groups['waist'].value_counts().keys().tolist()
-        waistcounts = groups['waist'].value_counts().tolist()
+    #     waistvalues = groups['waist'].value_counts().keys().tolist()
+    #     waistcounts = groups['waist'].value_counts().tolist()
 
-        footvalues = groups['foot'].value_counts().keys().tolist()
-        footcounts = groups['foot'].value_counts().tolist()
+    #     footvalues = groups['foot'].value_counts().keys().tolist()
+    #     footcounts = groups['foot'].value_counts().tolist()
 
-        handvalues = groups['hand'].value_counts().keys().tolist()
-        handcounts = groups['hand'].value_counts().tolist()
+    #     handvalues = groups['hand'].value_counts().keys().tolist()
+    #     handcounts = groups['hand'].value_counts().tolist()
 
-        neckvalues = groups['neck'].value_counts().keys().tolist()
-        neckcounts = groups['neck'].value_counts().tolist()
+    #     neckvalues = groups['neck'].value_counts().keys().tolist()
+    #     neckcounts = groups['neck'].value_counts().tolist()
 
-        ringvalues = groups['ring'].value_counts().keys().tolist()
-        ringcounts = groups['ring'].value_counts().tolist()
+    #     ringvalues = groups['ring'].value_counts().keys().tolist()
+    #     ringcounts = groups['ring'].value_counts().tolist()
 
-        col21, col22 = st.columns([2,1])
-        col23, col24 = st.columns([2,1])
-        col25, col26 = st.columns([2,1])
-        col27, col28 = st.columns([2,1])
+    #     col21, col22 = st.columns([2,1])
+    #     col23, col24 = st.columns([2,1])
+    #     col25, col26 = st.columns([2,1])
+    #     col27, col28 = st.columns([2,1])
 
-        col21.text(str('Most common weapon: ' + str(str(wepvalues[0]) + ': ' + str(wepcounts[0]))))
-        col22.text(str('Most common chest: ' + str(str(chestvalues[0]) + ': ' + str(chestcounts[0]))))
-        col23.text(str("Most common head: " + str(str(headvalues[0]) + ': ' + str(headcounts[0]))))
-        col24.text(str("Most common waist: " + str(str(waistvalues[0]) + ': ' + str(waistcounts[0]))))
-        col25.text(str("Most common foot: " + str(str(footvalues[0]) + ': ' + str(footcounts[0]))))
-        col26.text(str("Most common hand: " + str(str(handvalues[0]) + ': ' + str(handcounts[0]))))
-        col27.text(str("Most common neck: " + str(str(neckvalues[0]) + ': ' + str(neckcounts[0]))))
-        col28.text(str("Most common ring: " + str(str(ringvalues[0]) + ': ' + str(ringcounts[0]))))
-        st.markdown('##')
-        st.write('--')
-        st.text('The relationships between each loot are open to interpretations.')
-        #AgGrid(groups[['lootId','loot_score', 'loot_rank','sqdist','weapon', 'chest', 'head', 'waist', 'foot', 'hand', 'neck', 'ring']])
+    #     col21.text(str('Most common weapon: ' + str(str(wepvalues[0]) + ': ' + str(wepcounts[0]))))
+    #     col22.text(str('Most common chest: ' + str(str(chestvalues[0]) + ': ' + str(chestcounts[0]))))
+    #     col23.text(str("Most common head: " + str(str(headvalues[0]) + ': ' + str(headcounts[0]))))
+    #     col24.text(str("Most common waist: " + str(str(waistvalues[0]) + ': ' + str(waistcounts[0]))))
+    #     col25.text(str("Most common foot: " + str(str(footvalues[0]) + ': ' + str(footcounts[0]))))
+    #     col26.text(str("Most common hand: " + str(str(handvalues[0]) + ': ' + str(handcounts[0]))))
+    #     col27.text(str("Most common neck: " + str(str(neckvalues[0]) + ': ' + str(neckcounts[0]))))
+    #     col28.text(str("Most common ring: " + str(str(ringvalues[0]) + ': ' + str(ringcounts[0]))))
+    #     st.markdown('##')
+    #     st.write('--')
+    #     st.text('The relationships between each loot are open to interpretations.')
+    #     #AgGrid(groups[['lootId','loot_score', 'loot_rank','sqdist','weapon', 'chest', 'head', 'waist', 'foot', 'hand', 'neck', 'ring']])
 
-        st.markdown('##')
-        selection = st.selectbox('Select equipment:', ['weapon_rarity', 'chest_rarity', 'head_rarity', 'waist_rarity', 'foot_rarity', 'hand_rarity', 'neck_rarity', 'ring_rarity'])
-        st.text("Look at different categories in each cluster.")
-        eq = df[selection]
-        fig, ax = plt.subplots(figsize = (10,6), dpi=300)
-        fig.suptitle('Loot sub-clusters', fontsize=20)
-        sns.scatterplot(groups.loc[:,'tsne1'],groups.loc[:,'tsne2'],hue=eq, palette='Set1', s=100, alpha=0.6)
-        plt.xlabel('Dimension 1', fontsize=12)
-        plt.ylabel('Dimension 2', fontsize=12)
-        plt.legend()
-        fig.tight_layout()
-        st.pyplot(fig)
+    #     st.markdown('##')
+    #     selection = st.selectbox('Select equipment:', ['weapon_rarity', 'chest_rarity', 'head_rarity', 'waist_rarity', 'foot_rarity', 'hand_rarity', 'neck_rarity', 'ring_rarity'])
+    #     st.text("Look at different categories in each cluster.")
+    #     eq = df[selection]
+    #     fig, ax = plt.subplots(figsize = (10,6), dpi=300)
+    #     fig.suptitle('Loot sub-clusters', fontsize=20)
+    #     sns.scatterplot(groups.loc[:,'tsne1'],groups.loc[:,'tsne2'],hue=eq, palette='Set1', s=100, alpha=0.6)
+    #     plt.xlabel('Dimension 1', fontsize=12)
+    #     plt.ylabel('Dimension 2', fontsize=12)
+    #     plt.legend()
+    #     fig.tight_layout()
+    #     st.pyplot(fig)
 
-        st.markdown('##')
-        selection = st.selectbox('Select equipment:', ['weapon', 'chest', 'head', 'waist', 'foot', 'hand', 'neck', 'ring'])
-        st.text("Look at distributions in each cluster.")
-        dft = groups.groupby(f"{selection}_rarity")[selection].value_counts().reset_index(name='Count')
-        fig, ax = plt.subplots(figsize = (20,8))
-        plt.title(f"{selection}" + ' distributions')
-        sns.barplot(x=selection, y='Count', data=dft, hue=f"{selection}_rarity", dodge=False)
-        plt.legend(title='Item Rarity', bbox_to_anchor=(1, 1), loc='upper right')
-        plt.xlabel('Item name')
-        ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha='right')
-        fig.tight_layout()
-        st.pyplot(fig)
+    #     st.markdown('##')
+    #     selection = st.selectbox('Select equipment:', ['weapon', 'chest', 'head', 'waist', 'foot', 'hand', 'neck', 'ring'])
+    #     st.text("Look at distributions in each cluster.")
+    #     dft = groups.groupby(f"{selection}_rarity")[selection].value_counts().reset_index(name='Count')
+    #     fig, ax = plt.subplots(figsize = (20,8))
+    #     plt.title(f"{selection}" + ' distributions')
+    #     sns.barplot(x=selection, y='Count', data=dft, hue=f"{selection}_rarity", dodge=False)
+    #     plt.legend(title='Item Rarity', bbox_to_anchor=(1, 1), loc='upper right')
+    #     plt.xlabel('Item name')
+    #     ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha='right')
+    #     fig.tight_layout()
+    #     st.pyplot(fig)
     
     # if page == 'Attributes sheet':
     #     st.subheader('Attibutes sheet')
