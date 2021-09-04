@@ -28,7 +28,7 @@ def load_data(DATA_URL):
 
 st.title('Loot Universe')
 PAGES = (
-    "Filter tool")#"Attributes sheet",  "Relationships"
+    "Filter tool",)#"Attributes sheet",  "Relationships"
 
 @st.cache
 def color_rarity(val):
